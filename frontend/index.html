@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Ensino Interativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Tela de Login Simplificada -->
+    <div id="login-screen" class="flex items-center justify-center h-screen">
+        <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900">Bem-vindo!</h1>
+                <p class="mt-2 text-gray-600">Insira seus dados para começar a jogar.</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-fullname" class="text-sm font-medium text-gray-700">Nome Completo</label>
+                    <input id="login-fullname" name="fullname" type="text" required class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="login-phone" class="text-sm font-medium text-gray-700">Telefone</label>
+                    <input id="login-phone" name="phone" type="tel" required class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="login-email" class="text-sm font-medium text-gray-700">E-mail</label>
+                    <input id="login-email" name="email" type="email" required class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <button type="submit" class="w-full px-4 py-2 font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 flex items-center justify-center">
+                        <span class="btn-text">Entrar e Jogar</span>
+                        <span class="loader hidden w-5 h-5 border-2 border-white rounded-full"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Interface Principal -->
+    <div id="main-interface" class="hidden">
+        <div class="flex h-screen bg-gray-200">
+            <!-- Menu Lateral -->
+            <aside class="flex flex-col w-64 bg-white shadow-lg">
+                <div class="flex items-center justify-center h-20 shadow-md">
+                    <h1 class="text-2xl font-bold text-indigo-600">Painel Acadêmico</h1>
+                </div>
+                <nav class="flex-1 px-2 py-4 space-y-2">
+                    <a href="#" data-target="dashboard-section" class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
+                    </a>
+                    <a href="#" data-target="shop-section" class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i> Loja de Bônus
+                    </a>
+                    <a href="#" data-target="game-section" class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                        <i data-lucide="gamepad-2" class="w-5 h-5 mr-3"></i> Jogo Interativo
+                    </a>
+                    <a href="#" data-target="reports-section" class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-3"></i> Relatórios
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Conteúdo Principal -->
+            <div class="flex flex-col flex-1">
+                <header class="flex items-center justify-between h-20 px-6 bg-white shadow-md">
+                    <div id="section-title" class="text-2xl font-semibold text-gray-800"></div>
+                    <div class="flex items-center space-x-4">
+                        <span id="user-display" class="font-medium text-gray-700"></span>
+                        <button id="logout-button" class="p-2 text-gray-500 rounded-full hover:bg-gray-200 hover:text-gray-800">
+                            <i data-lucide="log-out" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </header>
+                
+                <main class="flex-1 p-6 overflow-y-auto">
+                    <!-- Dashboard Section -->
+                    <div id="dashboard-section" class="content-section">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                            <div class="p-5 bg-white rounded-lg shadow">
+                                <div class="flex items-center">
+                                    <div class="p-3 bg-yellow-500 rounded-full">
+                                        <i data-lucide="coins" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">Senacoins</p>
+                                        <p id="dashboard-senacoins" class="text-2xl font-bold text-gray-900">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-white rounded-lg shadow">
+                                <div class="flex items-center">
+                                    <div class="p-3 bg-indigo-500 rounded-full">
+                                        <i data-lucide="star" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">Pontuação Total</p>
+                                        <p id="dashboard-score" class="text-2xl font-bold text-gray-900">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-white rounded-lg shadow">
+                                <div class="flex items-center">
+                                    <div class="p-3 bg-green-500 rounded-full">
+                                        <i data-lucide="pencil" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">Canetas Coletadas</p>
+                                        <p id="dashboard-pens" class="text-2xl font-bold text-gray-900">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-white rounded-lg shadow">
+                                <div class="flex items-center">
+                                    <div class="p-3 bg-blue-500 rounded-full">
+                                        <i data-lucide="cup-soda" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">Copos Coletados</p>
+                                        <p id="dashboard-cups" class="text-2xl font-bold text-gray-900">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-white rounded-lg shadow">
+                                <div class="flex items-center">
+                                    <div class="p-3 bg-red-500 rounded-full">
+                                        <i data-lucide="book-open" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">Livros Coletados</p>
+                                        <p id="dashboard-books" class="text-2xl font-bold text-gray-900">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-white rounded-lg shadow col-span-1 md:col-span-2 lg:col-span-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="p-3 bg-purple-500 rounded-full">
+                                            <i data-lucide="dog" class="w-6 h-6 text-white"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-500">Dica do Senacão</p>
+                                            <p id="gemini-tip-display" class="text-lg font-semibold text-gray-900">Clique no botão para uma dica!</p>
+                                        </div>
+                                    </div>
+                                    <button id="generate-tip-button" class="px-4 py-2 font-semibold text-white bg-purple-600 rounded-md hover:bg-purple-700 flex items-center justify-center min-w-[140px]">
+                                        <span class="btn-text">🐾 Gerar Dica</span>
+                                        <span class="loader hidden w-5 h-5 border-2 border-white rounded-full"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shop Section -->
+                    <div id="shop-section" class="content-section hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Loja de Bônus</h2>
+                            <div class="flex items-center p-2 bg-yellow-100 border border-yellow-300 rounded-lg">
+                                <i data-lucide="coins" class="w-6 h-6 text-yellow-600 mr-2"></i>
+                                <span class="font-bold text-lg text-yellow-700">Suas Senacoins: </span>
+                                <span id="shop-senacoins" class="font-bold text-lg text-yellow-700 ml-1">0</span>
+                            </div>
+                        </div>
+                        <div id="shop-items-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Itens da loja serão inseridos aqui -->
+                        </div>
+                    </div>
+
+                    <!-- Game Section -->
+                    <div id="game-section" class="content-section hidden h-full">
+                        <div class="relative w-full h-full p-4 rounded-lg shadow-inner" id="game-area">
+                            <div id="game-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-lg">
+                                <img id="overlay-senacao" src="https://i.imgur.com/sS49V5a.png" alt="Mascote Senacão" class="w-32 h-32 mb-4" onerror="this.onerror=null;this.src='https://placehold.co/128x128/e0f2fe/333?text=S';">
+                                <h2 id="overlay-title" class="text-4xl font-bold text-white"></h2>
+                                <div id="star-rating-container" class="flex mt-4"></div>
+                                <div class="p-4 mt-4 bg-black/30 rounded-lg max-w-lg">
+                                    <h3 id="boletim-title" class="text-xl font-bold text-white text-center mb-2 hidden"></h3>
+                                    <p id="overlay-message" class="text-lg text-center text-white"></p>
+                                </div>
+                                <div id="overlay-buttons" class="flex gap-4 mt-8">
+                                    <button id="overlay-action-button" class="px-6 py-3 font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 text-lg"></button>
+                                    <button id="overlay-shop-button" class="px-6 py-3 font-bold text-indigo-700 bg-yellow-400 rounded-lg hover:bg-yellow-500 text-lg hidden items-center">
+                                        <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i> Ir para Loja
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute top-4 left-4 p-2 bg-black/20 rounded-lg text-white text-xl font-bold">Fase: <span id="game-phase">1</span></div>
+                            <div class="absolute top-4 right-16 p-2 bg-black/20 rounded-lg text-white text-xl font-bold">Pontos: <span id="game-score">0</span> / <span id="game-target-score">0</span></div>
+                            <div class="absolute bottom-4 left-4 p-2 bg-black/20 rounded-lg text-white text-xl font-bold">Tempo: <span id="game-timer">60</span>s</div>
+                            <button id="pause-button" class="absolute top-4 right-4 p-2 text-gray-700 bg-white/50 rounded-full hover:bg-white/80">
+                                <i data-lucide="menu" class="w-6 h-6"></i>
+                            </button>
+                            
+                            <div id="pause-menu" class="hidden absolute inset-0 z-20 flex-col items-center justify-center bg-black bg-opacity-70 rounded-lg">
+                                <h2 class="text-4xl font-bold text-white mb-8">Jogo Pausado</h2>
+                                <div class="flex space-x-8">
+                                    <button id="resume-button" class="flex flex-col items-center text-white hover:text-indigo-300">
+                                        <i data-lucide="play" class="w-12 h-12"></i><span>Continuar</span>
+                                    </button>
+                                    <button id="home-button" class="flex flex-col items-center text-white hover:text-indigo-300">
+                                        <i data-lucide="home" class="w-12 h-12"></i><span>Início</span>
+                                    </button>
+                                    <button id="toggle-audio-button" class="flex flex-col items-center text-white hover:text-indigo-300">
+                                        <span id="audio-icon-container"></span><span>Áudio</span>
+                                    </button>
+                                    <button id="exit-game-button" class="flex flex-col items-center text-white hover:text-red-400">
+                                        <i data-lucide="x-circle" class="w-12 h-12"></i><span>Sair</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports Section -->
+                    <div id="reports-section" class="content-section hidden">
+                        <div class="p-6 bg-white rounded-lg shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Histórico de Pontuações</h3>
+                                <div class="relative">
+                                    <input type="text" id="table-search" class="w-64 pl-10 pr-4 py-2 border rounded-lg" placeholder="Pesquisar por nome...">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Nome</th>
+                                            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Pontuação Total</th>
+                                            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Senacoins</th>
+                                            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reports-table-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Dados da tabela serão inseridos aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
