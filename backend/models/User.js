@@ -7,6 +7,7 @@ class User {
     this.fullname = data.fullname || '';
     this.phone = data.phone || '';
     this.senacoins = data.senacoins || 100;
+    this.totalScore = data.totalScore  || 0;
     this.loginCount = data.loginCount || 0;
     this.createdAt = data.createdAt || Date.now();
     this.lastLogin = data.lastLogin || Date.now();
@@ -41,6 +42,7 @@ class User {
           fullname: this.fullname,
           phone: this.phone,
           senacoins: this.senacoins,
+          totalScore: this.totalScore,
           loginCount: this.loginCount,
           createdAt: this.createdAt,
           lastLogin: this.lastLogin
@@ -72,6 +74,7 @@ class User {
         fullname: userData.profile.fullname,
         phone: userData.profile.phone,
         senacoins: userData.profile.senacoins || 100,
+        totalScore: userData.totalScore  || 0,
         loginCount: userData.profile.loginCount || 0,
         createdAt: userData.profile.createdAt,
         lastLogin: userData.profile.lastLogin,
@@ -98,6 +101,7 @@ class User {
         fullname: userData.profile.fullname,
         phone: userData.profile.phone,
         senacoins: userData.profile.senacoins || 100,
+        totalScore: userData.totalScore  || 0,
         loginCount: userData.profile.loginCount || 0,
         createdAt: userData.profile.createdAt,
         lastLogin: userData.profile.lastLogin,
@@ -134,6 +138,7 @@ class User {
             fullname: userData.profile.fullname,
             phone: userData.profile.phone,
             senacoins: userData.profile.senacoins || 100,
+            totalScore: userData.totalScore || 0,
             loginCount: userData.profile.loginCount || 0,
             createdAt: userData.profile.createdAt,
             lastLogin: userData.profile.lastLogin,
@@ -277,6 +282,7 @@ class User {
       fullname: this.fullname,
       phone: this.phone,
       senacoins: this.senacoins,
+      totalScore: this.totalScore,
       loginCount: this.loginCount,
       createdAt: this.createdAt,
       lastLogin: this.lastLogin,

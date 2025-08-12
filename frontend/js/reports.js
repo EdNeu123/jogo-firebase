@@ -17,6 +17,7 @@ class ReportsManager {
         try {
             this.isLoading = true;
             const response = await api.getUserRanking(50);
+            console.log("response", response)
             
             if (response.success) {
                 this.currentData = response.ranking;
@@ -61,6 +62,7 @@ class ReportsManager {
         row.className = 'table-row hover:bg-gray-50';
 
         const createdDate = new Date(user.createdAt).toLocaleDateString('pt-BR');
+        console.log("user total score:", user.totalScore)
 
         row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
@@ -77,13 +79,13 @@ class ReportsManager {
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
-                    <span class="text-sm font-bold text-gray-900">${user.totalScore.toLocaleString()}</span>
+                    <span class="text-sm font-bold text-gray-900">${user.totalScore ? user.totalScore.toString() : 0}</span>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <i data-lucide="coins" class="w-4 h-4 text-yellow-500 mr-1"></i>
-                    <span class="text-sm font-bold text-yellow-600">${user.senacoins.toLocaleString()}</span>
+                    <span class="text-sm font-bold text-yellow-600">${user.senacoins.toString()}</span>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
