@@ -14,7 +14,6 @@
 
 <body class="bg-gray-100">
 
-    <!-- Tela de Login Simplificada -->
     <div id="login-screen" class="flex items-center justify-center h-screen">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
             <div class="text-center">
@@ -48,10 +47,8 @@
         </div>
     </div>
 
-    <!-- Interface Principal -->
     <div id="main-interface" class="hidden">
         <div class="flex h-screen bg-gray-200">
-            <!-- Menu Lateral -->
             <aside class="flex flex-col w-64 bg-white shadow-lg">
                 <div class="flex items-center justify-center h-20 shadow-md">
                     <h1 class="text-2xl font-bold text-indigo-600">Painel Acadêmico</h1>
@@ -74,24 +71,23 @@
                         <i data-lucide="file-text" class="w-5 h-5 mr-3"></i> Relatórios
                     </a>
                     <button id="logout-button"
-                        class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                        class="nav-link flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200 w-full text-left">
                         <i data-lucide="log-out" class="w-5 h-5 mr-3"></i> Logout
                     </button>
                 </nav>
             </aside>
 
-            <!-- Conteúdo Principal -->
             <div class="flex flex-col flex-1">
-                <!-- <header class="flex items-center justify-between h-20 px-6 bg-white shadow-md">
+                <header class="flex items-center justify-between h-20 px-6 bg-white shadow-md">
                     <div id="section-title" class="text-2xl font-semibold text-gray-800"></div>
                     <div class="flex items-center space-x-4">
                         <span id="user-display" class="font-medium text-gray-700"></span>
                     </div>
-                </header> -->
+                </header>
 
-                <main class="flex-1 p-6 overflow-y-auto">
-                    <!-- Dashboard Section -->
-                    <div id="dashboard-section" class="content-section">
+                <main class="flex-1 overflow-y-auto bg-gray-100">
+                    
+                    <div id="dashboard-section" class="content-section p-6">
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                             <div class="p-5 bg-white rounded-lg shadow">
                                 <div class="flex items-center">
@@ -170,8 +166,7 @@
                         </div>
                     </div>
 
-                    <!-- Shop Section -->
-                    <div id="shop-section" class="content-section hidden">
+                    <div id="shop-section" class="content-section hidden p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold">Loja de Bônus</h2>
                             <div class="flex items-center p-2 bg-yellow-100 border border-yellow-300 rounded-lg">
@@ -181,22 +176,19 @@
                             </div>
                         </div>
                         <div id="shop-items-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Itens da loja serão inseridos aqui -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- Game Section -->
-                    <div id="game-section" class="content-section hidden h-full">
-                        <div class="relative w-full h-full p-4 rounded-lg shadow-inner" id="game-area">
+                    <div id="game-section" class="content-section hidden h-full p-6 flex flex-col">
+                        <div class="relative w-full flex-1 rounded-lg shadow-inner" id="game-area">
                             <div id="game-overlay"
                                 class="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-lg">
                                 <img id="overlay-senacao" src="./assets/images/senacao.jpeg" alt="Mascote Senacão"
                                     class="w-32 h-32 mb-4">
-                                <h2 id="overlay-title" class="text-4xl font-bold text-white"></h2>
+                                <h2 id="overlay-title" class="text-4xl font-bold text-gray-800"></h2>
                                 <div id="star-rating-container" class="flex mt-4"></div>
                                 <div class="p-4 mt-4 bg-black/30 rounded-lg max-w-lg">
-                                    <h3 id="boletim-title" class="text-xl font-bold text-white text-center mb-2 hidden">
-                                    </h3>
+                                     <h3 id="boletim-title" class="text-xl font-bold text-white text-center mb-2 hidden"></h3>
                                     <p id="overlay-message" class="text-lg text-center text-white"></p>
                                 </div>
                                 <div id="overlay-buttons" class="flex gap-4 mt-8">
@@ -234,24 +226,26 @@
                                         class="flex flex-col items-center text-white hover:text-indigo-300">
                                         <i data-lucide="home" class="w-12 h-12"></i><span>Início</span>
                                     </button>
-                                    <button id="toggle-audio-button"
-                                        class="flex flex-col items-center text-white hover:text-indigo-300">
-                                        <span id="audio-icon-container"></span><span>Áudio</span>
-                                    </button>
                                     <button id="exit-game-button"
                                         class="flex flex-col items-center text-white hover:text-red-400">
-                                        <i data-lucide="x-circle" class="w-12 h-12"></i><span>Sair</span>
+                                        <i data-lucide="x-circle" class="w-12 h-12"></i><span>Sair do Jogo</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
+
+                        <div id="inventory-container" class="pt-4">
+                            <h3 class="text-sm font-bold text-gray-600 uppercase mb-2 text-center">Seu Inventário</h3>
+                            <div id="inventory-bar" class="flex justify-center items-center gap-4 p-2 bg-white/50 rounded-lg shadow min-h-[68px]">
+                                <p id="empty-inventory-message" class="text-gray-500">Nenhum item no inventário. Visite a loja!</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Reports Section -->
-                    <div id="reports-section" class="content-section hidden">
+                    <div id="reports-section" class="content-section hidden p-6">
                         <div class="p-6 bg-white rounded-lg shadow">
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-semibold text-gray-800">Histórico de Pontuações</h3>
+                                <h3 class="text-xl font-semibold text-gray-800">Ranking - Top 10 Jogadores</h3>
                                 <div class="relative">
                                     <input type="text" id="table-search" class="w-64 pl-10 pr-4 py-2 border rounded-lg"
                                         placeholder="Pesquisar por nome...">
@@ -266,7 +260,7 @@
                                         <tr>
                                             <th
                                                 class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                Nome</th>
+                                                Jogador</th>
                                             <th
                                                 class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                                 Pontuação Total</th>
@@ -275,12 +269,11 @@
                                                 Senacoins</th>
                                             <th
                                                 class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                Data</th>
+                                                Data de Início</th>
                                         </tr>
                                     </thead>
                                     <tbody id="reports-table-body" class="bg-white divide-y divide-gray-200">
-                                        <!-- Dados da tabela serão inseridos aqui -->
-                                    </tbody>
+                                        </tbody>
                                 </table>
                             </div>
                         </div>
@@ -290,7 +283,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>

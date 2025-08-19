@@ -12,19 +12,20 @@ class ReportsManager {
         this.initializeEvents();
     }
 
-    // Carregar dados dos relatórios
+    // Carregar dados dos relatórios (agora com foco no ranking Top 10)
     async loadReportsData() {
         try {
             this.isLoading = true;
-            const response = await api.getUserRanking(50);
-            console.log("response", response)
+            // CORREÇÃO: Busca o ranking com limite de 10 jogadores
+            const response = await api.getUserRanking(10); 
             
             if (response.success) {
                 this.currentData = response.ranking;
                 this.filteredData = [...this.currentData];
                 this.renderReportsTable();
             }
-        } catch (error) {
+        } catch (error)
+        {
             console.error('Erro ao carregar relatórios:', error);
             showNotification('Erro ao carregar relatórios', 'error');
         } finally {
@@ -43,49 +44,51 @@ class ReportsManager {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                    Nenhum dado encontrado
+                    Nenhum jogador encontrado
                 </td>
             `;
             tableBody.appendChild(row);
             return;
         }
 
-        this.filteredData.forEach((user, index) => {
-            const row = this.createTableRow(user, index);
+        this.filteredData.forEach((user) => {
+            const row = this.createTableRow(user);
             tableBody.appendChild(row);
         });
+
+        // Recria os ícones Lucide após a tabela ser renderizada
+        lucide.createIcons();
     }
 
-    // Criar linha da tabela
-    createTableRow(user, index) {
+    // Criar linha da tabela (com o novo visual do ranking)
+    createTableRow(user) {
         const row = document.createElement('tr');
         row.className = 'table-row hover:bg-gray-50';
 
         const createdDate = new Date(user.createdAt).toLocaleDateString('pt-BR');
-        console.log("user total score:", user.totalScore)
 
         row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
-                        <span class="text-sm font-medium text-indigo-600">${user.position}</span>
+                    <div class="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-3 font-bold text-indigo-600 text-lg">
+                        ${user.position}º
                     </div>
                     <div>
                         <div class="text-sm font-medium text-gray-900">${user.fullname}</div>
-                        <div class="text-sm text-gray-500">ID: ${user.id.substring(0, 8)}...</div>
+                        <div class="text-sm text-gray-500">${User.decodeEmail(user.id)}</div>
                     </div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
-                    <span class="text-sm font-bold text-gray-900">${user.totalScore ? user.totalScore.toString() : 0}</span>
+                <div class="flex items-center text-sm font-semibold text-gray-800">
+                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-2"></i>
+                    ${user.totalScore ? user.totalScore.toLocaleString('pt-BR') : 0}
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    <i data-lucide="coins" class="w-4 h-4 text-yellow-500 mr-1"></i>
-                    <span class="text-sm font-bold text-yellow-600">${user.senacoins.toString()}</span>
+                <div class="flex items-center text-sm font-semibold text-yellow-700">
+                    <i data-lucide="coins" class="w-4 h-4 text-yellow-500 mr-2"></i>
+                    ${user.senacoins.toLocaleString('pt-BR')}
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -98,16 +101,16 @@ class ReportsManager {
 
     // Inicializar eventos dos relatórios
     initializeEvents() {
-        // Evento de busca
         const searchInput = document.getElementById('table-search');
         if (searchInput) {
+            // A busca agora filtra a lista local do Top 10
             searchInput.addEventListener('input', (e) => {
                 this.filterData(e.target.value);
             });
         }
     }
 
-    // Filtrar dados
+    // Filtrar dados (busca local no ranking já carregado)
     filterData(query) {
         if (!query.trim()) {
             this.filteredData = [...this.currentData];
@@ -117,14 +120,12 @@ class ReportsManager {
                 user.fullname.toLowerCase().includes(searchTerm)
             );
         }
-
         this.renderReportsTable();
-        
-        // Recriar ícones Lucide após renderizar
-        lucide.createIcons();
     }
 
-    // Buscar usuários na API
+    // --- FUNCIONALIDADES RESTAURADAS ---
+
+    // Buscar usuários na API (mantido para uso futuro)
     async searchUsers(query) {
         try {
             if (query.length < 2) {
@@ -132,31 +133,27 @@ class ReportsManager {
                 this.renderReportsTable();
                 return;
             }
-
             this.isLoading = true;
             const response = await api.searchUsers(query);
-            
             if (response.success) {
                 this.filteredData = response.results.map((user, index) => ({
                     ...user,
-                    position: index + 1
+                    position: index + 1 // A posição aqui seria baseada na busca
                 }));
                 this.renderReportsTable();
             }
         } catch (error) {
             console.error('Erro ao buscar usuários:', error);
-            // Fallback para busca local
-            this.filterData(query);
+            this.filterData(query); // Usa o filtro local como fallback
         } finally {
             this.isLoading = false;
         }
     }
 
-    // Obter estatísticas gerais
+    // Obter estatísticas gerais (mantido para uso futuro)
     async loadGeneralStats() {
         try {
             const response = await api.getGeneralStats();
-            
             if (response.success) {
                 this.displayGeneralStats(response.stats);
             }
@@ -165,20 +162,17 @@ class ReportsManager {
         }
     }
 
-    // Exibir estatísticas gerais
+    // Exibir estatísticas gerais (mantido para uso futuro)
     displayGeneralStats(stats) {
-        // Implementar exibição de estatísticas gerais se necessário
         console.log('Estatísticas gerais:', stats);
     }
 
-    // Obter relatório detalhado do usuário atual
+    // Obter relatório detalhado do usuário atual (mantido para uso futuro)
     async loadUserReport() {
         try {
             const user = authManager.getCurrentUser();
             if (!user) return;
-
             const response = await api.getUserReport(user.id);
-            
             if (response.success) {
                 this.displayUserReport(response.report);
             }
@@ -187,15 +181,13 @@ class ReportsManager {
         }
     }
 
-    // Exibir relatório do usuário
+    // Exibir relatório do usuário (mantido para uso futuro)
     displayUserReport(report) {
-        // Implementar exibição do relatório detalhado se necessário
         console.log('Relatório do usuário:', report);
     }
 
-    // Exportar dados (funcionalidade futura)
+    // Exportar dados (mantido para uso futuro)
     exportData(format = 'csv') {
-        // Implementar exportação de dados
         console.log(`Exportando dados em formato ${format}`);
         showNotification('Funcionalidade de exportação em desenvolvimento', 'info');
     }
@@ -203,42 +195,39 @@ class ReportsManager {
     // Atualizar dados
     async refresh() {
         await this.loadReportsData();
-        showNotification('Relatórios atualizados', 'success');
+        showNotification('Ranking atualizado', 'success');
     }
 
     // Mostrar seção de relatórios
     show() {
         const reportsSection = document.getElementById('reports-section');
         if (reportsSection) {
-            // Esconder outras seções
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.add('hidden');
                 section.classList.remove('active');
             });
-
-            // Mostrar relatórios
             reportsSection.classList.remove('hidden');
-            setTimeout(() => {
-                reportsSection.classList.add('active');
-            }, 10);
-
-            // Atualizar título da seção
+            setTimeout(() => reportsSection.classList.add('active'), 10);
+            
             const sectionTitle = document.getElementById('section-title');
             if (sectionTitle) {
-                sectionTitle.textContent = 'Relatórios';
+                // CORREÇÃO: Atualiza o título da seção
+                sectionTitle.textContent = 'Ranking de Jogadores'; 
             }
 
-            // Recarregar dados
+            // Recarregar dados ao exibir a seção
             this.loadReportsData();
-
-            // Recriar ícones Lucide
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 100);
         }
     }
 }
 
+// Objeto auxiliar para decodificar e-mail no frontend
+const User = {
+    decodeEmail(encodedEmail) {
+        if (!encodedEmail) return '';
+        return encodedEmail.replace(/,/g, '.').replace(/_at_/g, '@');
+    }
+};
+
 // Instância global do gerenciador de relatórios
 const reportsManager = new ReportsManager();
-

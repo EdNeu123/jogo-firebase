@@ -12,11 +12,11 @@ const CONFIG = {
             book: 20
         },
         PHASES: {
-            1: { targetScore: 100, timeLimit: 60 },
-            2: { targetScore: 200, timeLimit: 90 },
-            3: { targetScore: 300, timeLimit: 120 },
-            4: { targetScore: 400, timeLimit: 150 },
-            5: { targetScore: 500, timeLimit: 180 }
+            1: { targetScore: 300, timeLimit: 60 },
+            2: { targetScore: 600, timeLimit: 90 },
+            3: { targetScore: 900, timeLimit: 120 },
+            4: { targetScore: 1200, timeLimit: 150 },
+            5: { targetScore: 1500, timeLimit: 180 }
         }
     },
     

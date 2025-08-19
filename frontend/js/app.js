@@ -78,12 +78,15 @@ class App {
         const navLinks = document.querySelectorAll('.nav-link');
         
         navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = link.dataset.target;
-                const sectionName = target.replace('-section', '');
-                this.showSection(sectionName);
-            });
+            // CORREÇÃO: Verifica se o elemento possui o atributo data-target
+            if (link.dataset.target) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.dataset.target;
+                    const sectionName = target.replace('-section', '');
+                    this.showSection(sectionName);
+                });
+            }
         });
 
         // Marcar primeiro link como ativo
@@ -134,12 +137,15 @@ class App {
         
         navLinks.forEach(link => {
             const target = link.dataset.target;
-            const linkSectionName = target.replace('-section', '');
-            
-            if (linkSectionName === sectionName) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
+            // CORREÇÃO: Verifica se o target (data-target) existe antes de usá-lo
+            if (target) {
+                const linkSectionName = target.replace('-section', '');
+                
+                if (linkSectionName === sectionName) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
             }
         });
     }
@@ -253,4 +259,3 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // Exportar para uso global se necessário
 window.app = app;
-
