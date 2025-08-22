@@ -8,26 +8,52 @@ class ReportsManager {
 
     // Inicializar relatórios
     async initialize() {
-        await this.loadReportsData();
+        // await this.loadReportsData();
         this.initializeEvents();
     }
 
     // Carregar dados dos relatórios (agora com foco no ranking Top 10)
     async loadReportsData() {
+        const tableBody = document.getElementById('reports-table-body');
+        if (!tableBody) return;
+
         try {
             this.isLoading = true;
-            // CORREÇÃO: Busca o ranking com limite de 10 jogadores
+            // 1. INSERE O AVISO DE "CARREGANDO" IMEDIATAMENTE NA TABELA
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                        <div class="flex items-center justify-center">
+                            <div class="loader w-6 h-6 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                            <span class="ml-2">Carregando ranking...</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            // 2. AGUARDA A RESPOSTA DA API
             const response = await api.getUserRanking(10); 
             
             if (response.success) {
                 this.currentData = response.ranking;
                 this.filteredData = [...this.currentData];
-                this.renderReportsTable();
+                // 3. SOMENTE DEPOIS DE RECEBER OS DADOS, RENDERIZA A TABELA CORRETA
+                this.renderReportsTable(); 
+            } else {
+                // Se a API retornar um erro, mostra na tela
+                throw new Error(response.message || 'Não foi possível carregar o ranking.');
             }
-        } catch (error)
-        {
+        } catch (error) {
             console.error('Erro ao carregar relatórios:', error);
             showNotification('Erro ao carregar relatórios', 'error');
+            // 4. MOSTRA UMA MENSAGEM DE ERRO NA TABELA SE A REQUISIÇÃO FALHAR
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-red-500 font-semibold">
+                        Falha ao carregar o ranking. Tente novamente.
+                    </td>
+                </tr>
+            `;
         } finally {
             this.isLoading = false;
         }

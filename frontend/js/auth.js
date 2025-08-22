@@ -148,7 +148,6 @@ class AuthManager {
             loader.classList.remove('hidden');
             submitButton.disabled = true;
 
-            // Coletar dados do formulário
             const formData = new FormData(form);
             const userData = {
                 fullname: formData.get('fullname'),
@@ -156,14 +155,19 @@ class AuthManager {
                 phone: formData.get('phone')
             };
 
-            // Fazer login
-            const response = await this.login(userData);
+            await this.login(userData);
 
-            // Mostrar mensagem de sucesso
             showNotification(CONFIG.MESSAGES.LOGIN_SUCCESS, 'success');
 
-            // Mostrar interface principal
             this.showMainInterface();
+
+            // --- INÍCIO DA CORREÇÃO ---
+            // Estas 3 linhas resolvem o problema. Elas forçam a inicialização
+            // da aplicação principal logo após o login, sem precisar de F5.
+            await app.initializeManagers();
+            app.initializeNavigation();
+            app.showSection('dashboard');
+            // --- FIM DA CORREÇÃO ---
 
         } catch (error) {
             console.error('Erro no login:', error);
