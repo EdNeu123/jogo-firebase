@@ -1,7 +1,7 @@
 // Configurações da aplicação
 const CONFIG = {
     // URL base da API (ajustar conforme necessário)
-    API_BASE_URL: 'http://localhost:3001/api',
+    API_BASE_URL: 'https://jogo-firebase.vercel.app/api',
     
     // Configurações do jogo
     GAME: {
