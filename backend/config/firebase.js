@@ -2,19 +2,23 @@ const admin = require('firebase-admin');
 
 let serviceAccount;
 
-// Tenta carregar as credenciais da variável de ambiente primeiro (para Vercel)
-if (process.env.FIREBASE_CREDENTIALS) {
-  serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+// Se a variável em Base64 existir (na Vercel), decodifica e usa
+if (process.env.FIREBASE_CREDENTIALS_BASE64) {
+  const decodedCredentials = Buffer.from(process.env.FIREBASE_CREDENTIALS_BASE64, 'base64').toString('ascii');
+  serviceAccount = JSON.parse(decodedCredentials);
 } 
-// Se não encontrar, carrega do arquivo (para desenvolvimento local)
+// Senão, usa o arquivo local (para desenvolvimento na sua máquina)
 else {
   serviceAccount = require('./firebase-credentials.json');
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com/`
-});
+// Inicializa o app do Firebase, somente se não foi inicializado antes
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com/`
+  });
+}
 
 const db = admin.database();
 
