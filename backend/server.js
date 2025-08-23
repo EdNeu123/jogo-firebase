@@ -19,10 +19,6 @@ require('./config/firebase');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares de segurança e logging
-app.use(helmet());
-app.use(morgan('combined'));
-
 // Configurar CORS para permitir acesso do frontend
 const allowedOrigins = [
   'https://topgame-e9e1c.web.app',   // frontend hospedado no Firebase
@@ -45,6 +41,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+
+// Middlewares de segurança e logging
+app.use(helmet());
+app.use(morgan('combined'));
 
 
 // Middleware para parsing JSON
@@ -100,4 +101,3 @@ process.on('uncaughtException', (error) => {
 });
 
 module.exports = app;
-
