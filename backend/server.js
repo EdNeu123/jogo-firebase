@@ -24,23 +24,28 @@ app.use(helmet());
 app.use(morgan('combined'));
 
 // Configurar CORS para permitir acesso do frontend
-const whitelist = [
-    'https://topgame-e9e1c.web.app', // A URL do seu futuro frontend no Firebase
-    'http://localhost:8000'          // A URL do seu frontend local
-];
-
 const allowedOrigins = [
-    'https://topgame-e9e1c.web.app', // A URL do seu futuro frontend no Firebase
-    'http://localhost:8000'          // A URL do seu frontend local
+  'https://topgame-e9e1c.web.app',   // frontend hospedado no Firebase
+  'http://localhost:8000',           // frontend local
+  'http://localhost:3000',           // dev local
+  'https://jogo-firebase.vercel.app' // backend no Vercel
 ];
 
 app.use(cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    optionsSuccessStatus: 204 // Para requisições de sondagem (preflight)
+  origin: function (origin, callback) {
+    // Permite Postman/cURL (sem Origin)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error('❌ CORS bloqueado para:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
 
 // Middleware para parsing JSON
 app.use(express.json({ limit: '10mb' }));
