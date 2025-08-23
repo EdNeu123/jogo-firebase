@@ -1,8 +1,15 @@
 const admin = require('firebase-admin');
-const path = require('path');
 
-// Inicializar Firebase Admin SDK
-const serviceAccount = require(path.join(__dirname, 'firebase-credentials.json'));
+let serviceAccount;
+
+// Tenta carregar as credenciais da variável de ambiente primeiro (para Vercel)
+if (process.env.FIREBASE_CREDENTIALS) {
+  serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+} 
+// Se não encontrar, carrega do arquivo (para desenvolvimento local)
+else {
+  serviceAccount = require('./firebase-credentials.json');
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -15,4 +22,3 @@ module.exports = {
   admin,
   db
 };
-
