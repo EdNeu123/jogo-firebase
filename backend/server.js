@@ -29,17 +29,18 @@ const whitelist = [
     'http://localhost:8000'          // A URL do seu frontend local
 ];
 
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+const allowedOrigins = [
+    'https://topgame-e9e1c.web.app', // A URL do seu futuro frontend no Firebase
+    'http://localhost:8000'          // A URL do seu frontend local
+];
+
+app.use(cors({
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 204 // Para requisições de sondagem (preflight)
+}));
 
 // Middleware para parsing JSON
 app.use(express.json({ limit: '10mb' }));
