@@ -2,17 +2,17 @@ const admin = require('firebase-admin');
 
 let serviceAccount;
 
-// Se a variável em Base64 existir (na Vercel), decodifica e usa
+// Tenta carregar as credenciais da variável de ambiente (para Vercel)
 if (process.env.FIREBASE_CREDENTIALS_BASE64) {
   const decodedCredentials = Buffer.from(process.env.FIREBASE_CREDENTIALS_BASE64, 'base64').toString('ascii');
   serviceAccount = JSON.parse(decodedCredentials);
 } 
-// Senão, usa o arquivo local (para desenvolvimento na sua máquina)
+// Senão, carrega do arquivo local (para desenvolvimento na sua máquina)
 else {
   serviceAccount = require('./firebase-credentials.json');
 }
 
-// Inicializa o app do Firebase, somente se não foi inicializado antes
+// Inicializa o app somente se não houver outras instâncias
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
