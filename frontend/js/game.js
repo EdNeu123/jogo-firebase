@@ -50,7 +50,7 @@ class GameManager {
 
         const homeButton = document.getElementById('home-button');
         if (homeButton) homeButton.addEventListener('click', () => this.goHome());
-        
+
         const exitGameButton = document.getElementById('exit-game-button');
         if (exitGameButton) exitGameButton.addEventListener('click', () => this.exitGame());
 
@@ -126,11 +126,11 @@ class GameManager {
                 setTimeout(() => {
                     this.isScoreMultiplierActive = false;
                     showNotification('Multiplicador de pontos acabou.', 'info');
-                    if(itemElement) itemElement.classList.remove('opacity-50', 'ring-2', 'ring-indigo-500');
+                    if (itemElement) itemElement.classList.remove('opacity-50', 'ring-2', 'ring-indigo-500');
                 }, 60000); // 60 segundos
                 itemUsed = true;
                 break;
-            
+
             default:
                 showNotification('Este item ainda não tem um efeito implementado.', 'info');
                 return;
@@ -153,7 +153,7 @@ class GameManager {
             await this.startNextPhase();
         }
     }
-    
+
     async startNewGame(phase = 1) {
         try {
             const user = authManager.getCurrentUser();
@@ -177,7 +177,7 @@ class GameManager {
             showNotification('Erro ao iniciar jogo', 'error');
         }
     }
-    
+
     async startNextPhase() {
         if (this.currentSession && this.currentSession.phase) {
             const nextPhase = this.currentSession.phase + 1;
@@ -187,7 +187,7 @@ class GameManager {
             showNotification('Erro ao iniciar a próxima fase', 'error');
         }
     }
-    
+
     setupGameSession() {
         if (!this.currentSession) return;
         document.getElementById('game-phase').textContent = this.currentSession.phase;
@@ -202,7 +202,7 @@ class GameManager {
 
     startGameLoop() {
         if (!this.currentSession) return;
-        if(this.gameTimer) clearInterval(this.gameTimer);
+        if (this.gameTimer) clearInterval(this.gameTimer);
         this.gameTimer = setInterval(() => {
             if (!this.isPaused && this.isGameActive) {
                 this.currentSession.timeRemaining--;
@@ -223,7 +223,7 @@ class GameManager {
         const delay = Math.random() * 2000 + 1000;
         setTimeout(() => this.generateGameItems(), delay);
     }
-    
+
     createGameItem(type) {
         if (!this.gameArea) return;
         const item = document.createElement('div');
@@ -251,11 +251,17 @@ class GameManager {
         if (!this.isGameActive || this.isPaused) return;
         const clickedItem = event.target.closest('.game-item');
         if (!clickedItem) return;
-        
+
+        if (clickedItem.dataset.clicked) {
+            return;
+        }
+
+        clickedItem.dataset.clicked = 'true';
+
+
         const itemType = clickedItem.dataset.type;
         let points = CONFIG.GAME.POINTS_PER_ITEM[itemType] || 10;
 
-        // MODIFICAÇÃO: Aplica bônus de pontos
         if (this.isScoreMultiplierActive) {
             points *= 2;
         }
@@ -263,13 +269,16 @@ class GameManager {
         try {
             const response = await api.updateScore(this.currentSession.id, points, itemType);
             if (response.success) {
-                this.currentSession = response.session;
+                this.currentSession.score = response.session.score;
                 document.getElementById('game-score').textContent = this.currentSession.score;
                 this.showPointsFeedback(event.clientX, event.clientY, points);
+
                 clickedItem.classList.add('clicked');
+
                 setTimeout(() => {
                     if (clickedItem.parentNode) clickedItem.parentNode.removeChild(clickedItem);
                 }, 300);
+
                 if (this.currentSession.score >= this.currentSession.targetScore) {
                     this.endGame(true);
                 }
@@ -279,7 +288,7 @@ class GameManager {
             console.error('Erro ao atualizar pontuação:', error);
         }
     }
-    
+
     showPointsFeedback(x, y, points) {
         const feedback = document.createElement('div');
         feedback.className = 'points-feedback';
@@ -293,7 +302,7 @@ class GameManager {
             if (feedback.parentNode) feedback.parentNode.removeChild(feedback);
         }, 1000);
     }
-    
+
     async endGame(victory = false) {
         if (!this.isGameActive) return;
         this.isGameActive = false;
@@ -313,7 +322,7 @@ class GameManager {
             }
         }
     }
-    
+
     showGameResult(victory) {
         const overlay = document.getElementById('game-overlay');
         const title = document.getElementById('overlay-title');
@@ -335,7 +344,7 @@ class GameManager {
         }
         this.showOverlay();
     }
-    
+
     clearGameItems() {
         this.gameItems.forEach(item => {
             if (item.parentNode) item.parentNode.removeChild(item);
@@ -396,7 +405,7 @@ class GameManager {
         if (dashboardManager) await dashboardManager.refreshAfterGameAction();
         app.showSection('dashboard');
     }
-    
+
     showInitialScreen() {
         const overlay = document.getElementById('game-overlay');
         const title = document.getElementById('overlay-title');
@@ -420,7 +429,7 @@ class GameManager {
             synth.triggerAttackRelease('C5', '8n');
         }
     }
-    
+
     show() {
         const gameSection = document.getElementById('game-section');
         if (gameSection) {
@@ -430,14 +439,14 @@ class GameManager {
             });
             gameSection.classList.remove('hidden');
             setTimeout(() => gameSection.classList.add('active'), 10);
-            
+
             const sectionTitle = document.getElementById('section-title');
             if (sectionTitle) sectionTitle.textContent = 'Jogo Interativo';
 
             if (!this.isGameActive) {
                 this.showInitialScreen();
             } else {
-                 this.renderInventory();
+                this.renderInventory();
             }
         }
     }
